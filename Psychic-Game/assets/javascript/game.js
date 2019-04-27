@@ -1,36 +1,60 @@
 //this is to keep track of all my variables        
 var wins = 0;
 var losses = 0;
-var guessesLeft;
-var guessedLetters;
-var lettersLeft;
-var userChoice = ['a', 'b', 'c', 'd ', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
-var computerChoice = ['a', 'b', 'c', 'd ', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
+var guessesLeft = 9;
+var guessedLetters = [];
+var lettersToGuess = null;
+var letters = ["a", "b", "c"];
 
-//this is my function that recognizes the user's choice & the CPU's
-document.onkeypress=function(event){
-    
-    var userGuess = event.key;
-    console.log(event.key);
-    //is-else statements to win the game. The code I had in before would just not work and I did not understand why.
-    var computerGuess = computerChoices[Math.floor(Math.random() * computerChoice.length)];
-        if (userGuess ===lettersLeft){
-            win();
-        } else {
-            fail()
-        }
+// these are my functions
+var updateGuesses = function () {
+    document.querySelector("#guesses-left").innerHTML = guessesLeft;
 };
 
-//my function to display the results. Should refer back to my paragraph id's in my HTML
-function display() {
-    var wins = document.getElementById("wins");
-    var losses = document.getElementById("losses");
-    var guessesLeft = document.getElementById("guesses-left");
-    var guessedLetters = document.getElementById("guessed-letters")
-    wins.innerHTML = wins;
-    losses.innerHTML = losses;
-    guessesLeft.innerHTML = guessesLeft;
-    guessedLetters.innerHTML = "," + guessedLetters;
+var updateLetterGuess = function() {
+    lettersToGuess = letters[Math.floor(Math.random() * letters.length)];
 };
 
+var updateSoFar = function() {
+    document.querySelector("#guesses-so-far").innerHTML = guessedLetters.join(",");
+};
+
+
+// keeping track of keyboard clicks
+document.onkeydown = function(event) {
+    guessesLeft--;
+// make sure all entries are registered as lowercase letters
+    var letter = event.key.toLowerCase();
+// this will send it to our array of 3 letters
+    guessedLetters.push(letter);
+
+    updateLetterGuess();
+    updateSoFar();
+
+    // if else statements for finding the guessed letter
+    if (letter === lettersToGuess) {
+        wins++;
+        document.querySelector("#wins").innerHTML = wins;
+
+        reset();
+    }
+    if (guessesLeft === 0) {
+        losses++;
+        document.querySelector("#losses").innerHTML = losses;
+
+        reset();
+    }
+};
+
+// reset my game
+var reset = function() {
+    guessesLeft = 9;
+    guessedLetters = [];
+    updateGuesses();
+    updateLetterGuess();
+    updateSoFar();
+};
+
+updateGuesses();
+updateLetterGuess();
 
